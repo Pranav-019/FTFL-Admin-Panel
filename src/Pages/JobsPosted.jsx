@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Spinner, Button, Card, Container, Row, Col } from 'react-bootstrap';
+import { Spinner, Button, Card, Container, Row, Col, Form } from 'react-bootstrap';
 
 const JobsPosted = () => {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [deletingJobId, setDeletingJobId] = useState(null);
+  const [editingJobId, setEditingJobId] = useState(null);
+  const [editableJob, setEditableJob] = useState({});
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -44,9 +46,139 @@ const JobsPosted = () => {
     }
   };
 
+  const handleEditJob = (job) => {
+    setEditableJob(job); // Set the entire job object as editable
+    setEditingJobId(job._id);
+  };
+
+  const handleUpdateJob = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(`https://ftfl-backend.vercel.app/api/jobs/update-job/${editingJobId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(editableJob),
+      });
+      if (response.ok) {
+        const updatedJobs = jobs.map(job => job._id === editingJobId ? { ...job, ...editableJob } : job);
+        setJobs(updatedJobs);
+        setEditingJobId(null);
+      } else {
+        alert('Failed to update the job');
+      }
+    } catch (error) {
+      console.error('Error updating job:', error);
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setEditableJob(prevState => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const handleNestedChange = (parentKey, childKey, value) => {
+    setEditableJob(prevState => ({
+      ...prevState,
+      [parentKey]: {
+        ...prevState[parentKey],
+        [childKey]: value,
+      },
+    }));
+  };
+
+  const renderField = (key, value) => {
+    if (typeof value === 'object' && !Array.isArray(value)) {
+      return (
+        <div key={key}>
+          <strong>{key}:</strong>
+          {Object.keys(value).map((childKey) => (
+            <div key={childKey} style={{ marginLeft: '20px' }}>
+              {renderField(childKey, value[childKey])}
+            </div>
+          ))}
+        </div>
+      );
+    } else if (Array.isArray(value)) {
+      return (
+        <div key={key}>
+          <strong>{key}:</strong>
+          <ul>
+            {value.map((item, index) => (
+              <li key={index}>{item}</li>
+            ))}
+          </ul>
+        </div>
+      );
+    } else {
+      return (
+        <Card.Text key={key}>
+          <strong>{key}:</strong> {value}
+        </Card.Text>
+      );
+    }
+  };
+
+  const renderEditableField = (key, value, parentKey = '') => {
+    const fullKey = parentKey ? `${parentKey}.${key}` : key;
+
+    if (typeof value === 'object' && !Array.isArray(value)) {
+      return (
+        <div key={key}>
+          <strong>{key}:</strong>
+          {Object.keys(value).map((childKey) => (
+            <div key={childKey} style={{ marginLeft: '20px' }}>
+              {renderEditableField(childKey, value[childKey], key)}
+            </div>
+          ))}
+        </div>
+      );
+    } else if (Array.isArray(value)) {
+      return (
+        <Form.Group className="mb-3" key={key}>
+          <Form.Label>{key}</Form.Label>
+          {value.map((item, index) => (
+            <Form.Control
+              key={index}
+              type="text"
+              value={item}
+              onChange={(e) => {
+                const newArray = [...value];
+                newArray[index] = e.target.value;
+                handleNestedChange(parentKey, key, newArray);
+              }}
+            />
+          ))}
+        </Form.Group>
+      );
+    } else {
+      return (
+        <Form.Group className="mb-3" key={key}>
+          <Form.Label>{key}</Form.Label>
+          <Form.Control
+            type="text"
+            name={fullKey}
+            value={value}
+            onChange={(e) => {
+              if (parentKey) {
+                handleNestedChange(parentKey, key, e.target.value);
+              } else {
+                handleChange(e);
+              }
+            }}
+          />
+        </Form.Group>
+      );
+    }
+  };
+
   return (
     <Container className="my-4">
-      <h1 className="text-center mb-4"></h1>
+      <h1 className="text-center mb-4">Jobs Posted</h1>
       {loading ? (
         <div className="text-center">
           <Spinner animation="border" variant="primary" />
@@ -58,17 +190,32 @@ const JobsPosted = () => {
               <Col key={job._id} xs={12} sm={6} md={4} lg={3} className="mb-4">
                 <Card className="shadow-sm">
                   <Card.Body>
-                    <Card.Title>{job.jobTitle}</Card.Title>
-                    <Card.Text><strong>Location:</strong> {job.workEnvironment}</Card.Text>
-                    <Card.Text><strong>Deadline:</strong> {new Date(job.applyDeadline).toLocaleDateString()}</Card.Text>
-                    <Card.Text><strong>Posted Date:</strong> {new Date(job.postDate).toLocaleDateString()}</Card.Text>
-                    <Button 
-                      variant="danger" 
-                      onClick={() => handleDeleteJob(job._id)}
-                      disabled={deletingJobId === job._id}
-                    >
-                      {deletingJobId === job._id ? <Spinner as="span" animation="border" size="sm" /> : 'Delete Job'}
-                    </Button>
+                    {editingJobId === job._id ? (
+                      <Form onSubmit={handleUpdateJob}>
+                        {Object.keys(editableJob).map((key) => {
+                          if (key === '_id' || key === '__v') return null; // Skip internal fields
+                          return renderEditableField(key, editableJob[key]);
+                        })}
+                        <Button variant="success" type="submit">Update</Button>
+                        <Button variant="secondary" onClick={() => setEditingJobId(null)} className="ms-2">Cancel</Button>
+                      </Form>
+                    ) : (
+                      <>
+                        {Object.keys(job).map((key) => {
+                          if (key === '_id' || key === '__v') return null; // Skip internal fields
+                          return renderField(key, job[key]);
+                        })}
+                        <Button 
+                          variant="danger" 
+                          onClick={() => handleDeleteJob(job._id)}
+                          disabled={deletingJobId === job._id}
+                          className="me-2"
+                        >
+                          {deletingJobId === job._id ? <Spinner as="span" animation="border" size="sm" /> : 'Delete Job'}
+                        </Button>
+                        <Button variant="primary" onClick={() => handleEditJob(job)}>Update Job</Button>
+                      </>
+                    )}
                   </Card.Body>
                 </Card>
               </Col>

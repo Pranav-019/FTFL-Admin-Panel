@@ -36,7 +36,7 @@ const Crm = () => {
   useEffect(() => {
     const fetchLeads = async () => {
       try {
-        const response = await fetch("https://Artisticify-backend.vercel.app/api/contact");
+        const response = await fetch("https://ftfl-backend.vercel.app/api/contact/");
         if (!response.ok) throw new Error("Failed to fetch leads");
         const data = await response.json();
         setLeads(data);

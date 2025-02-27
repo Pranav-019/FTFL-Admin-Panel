@@ -34,11 +34,11 @@ const Sidebar = () => {
           onClick={isMobile ? handleClose : undefined}
           className="flex items-center gap-3 mt-16 text-xl font-extrabold tracking-tight dark:text-white text-slate-900"
         >
-          <img src={logo} alt="FTFL Technologies" className="h-20 mb-5" />
+          <img src={logo} alt="FTFL Technologies" className="h-20 mb-1" />
         </Link>
       </div>
 
-      <div className="mt-10">
+      <div className="mt-5">
         {links.map((item) => (
           <div key={item.title}>
             <p className="text-gray-400 dark:text-gray-400 m-3 mt-4 uppercase">
@@ -82,16 +82,16 @@ const Sidebar = () => {
           style={{ width: '272px' }}
           className="bg-white dark:bg-secondary-dark-bg"
         >
-          <Offcanvas.Header closeButton={false} className="justify-content-end">
-  <MdOutlineCancel 
-    style={{ color: currentColor, cursor: 'pointer' }} 
-    onClick={handleClose} 
-    className="ms-auto"
-  />
-</Offcanvas.Header>
-<Offcanvas.Body className="p-2">
-  <SidebarContent />
-</Offcanvas.Body>
+          <Offcanvas.Header closeButton={false} className="justify-content-end p-2">
+            <MdOutlineCancel 
+              style={{ color: currentColor, cursor: 'pointer' }} 
+              onClick={handleClose} 
+              className="ms-auto"
+            />
+          </Offcanvas.Header>
+          <Offcanvas.Body className="p-0">
+            <SidebarContent />
+          </Offcanvas.Body>
         </Offcanvas>
       )}
     </>
