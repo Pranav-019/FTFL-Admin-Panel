@@ -91,38 +91,6 @@ const JobsPosted = () => {
     }));
   };
 
-  const renderField = (key, value) => {
-    if (typeof value === 'object' && !Array.isArray(value)) {
-      return (
-        <div key={key}>
-          <strong>{key}:</strong>
-          {Object.keys(value).map((childKey) => (
-            <div key={childKey} style={{ marginLeft: '20px' }}>
-              {renderField(childKey, value[childKey])}
-            </div>
-          ))}
-        </div>
-      );
-    } else if (Array.isArray(value)) {
-      return (
-        <div key={key}>
-          <strong>{key}:</strong>
-          <ul>
-            {value.map((item, index) => (
-              <li key={index}>{item}</li>
-            ))}
-          </ul>
-        </div>
-      );
-    } else {
-      return (
-        <Card.Text key={key}>
-          <strong>{key}:</strong> {value}
-        </Card.Text>
-      );
-    }
-  };
-
   const renderEditableField = (key, value, parentKey = '') => {
     const fullKey = parentKey ? `${parentKey}.${key}` : key;
 
@@ -178,7 +146,7 @@ const JobsPosted = () => {
 
   return (
     <Container className="my-4">
-      <h1 className="text-center mb-4">Jobs Posted</h1>
+      <h1 className="text-center mb-4"></h1>
       {loading ? (
         <div className="text-center">
           <Spinner animation="border" variant="primary" />
@@ -201,19 +169,21 @@ const JobsPosted = () => {
                       </Form>
                     ) : (
                       <>
-                        {Object.keys(job).map((key) => {
-                          if (key === '_id' || key === '__v') return null; // Skip internal fields
-                          return renderField(key, job[key]);
-                        })}
+                        {/* Display Job Name and Location */}
+                        <Card.Title>{job.jobTitle || 'No Job Name'}</Card.Title>
+                        <Card.Text>{job.jobLocation || 'No Location'}</Card.Text>
                         <Button 
                           variant="danger" 
+
+
+                    
                           onClick={() => handleDeleteJob(job._id)}
                           disabled={deletingJobId === job._id}
                           className="me-2"
                         >
                           {deletingJobId === job._id ? <Spinner as="span" animation="border" size="sm" /> : 'Delete Job'}
                         </Button>
-                        <Button variant="primary" onClick={() => handleEditJob(job)}>Update Job</Button>
+                        <Button variant="primary" onClick={() => handleEditJob(job)}>Edit Job</Button>
                       </>
                     )}
                   </Card.Body>
