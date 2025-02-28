@@ -148,7 +148,7 @@ const JobsPosted = () => {
 
   return (
     <Container className="my-4">
-      <h1 className="text-center mb-4">Posted Jobs</h1>
+      <h1 className="text-center mb-4"></h1>
       {loading ? (
         <div className="text-center">
           <Spinner animation="border" variant="primary" />

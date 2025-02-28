@@ -56,7 +56,7 @@ const Applied = () => {
     };
     return (
         <div className="container mt-4">
-            <h2 className="text-center mb-4">Job Applications</h2>
+            <h2 className="text-center mb-4"></h2>
 
             {/* Job Dropdown */}
             <div className="mb-3">
