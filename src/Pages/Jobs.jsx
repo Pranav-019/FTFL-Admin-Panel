@@ -24,30 +24,30 @@ const Jobs = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-
+  
     // Prepare job data for submission
     const jobData = {
       jobTitle,
       jobDescription,
       requirements: {
-        mustHave: mustHave.split(',').map(item => item.trim()), // Convert comma-separated string to array
-        niceToHave: niceToHave.split(',').map(item => item.trim()), // Convert comma-separated string to array
+        mustHave: mustHave.split(';').map(item => item.trim()), // Convert semicolon-separated string to array
+        niceToHave: niceToHave.split(';').map(item => item.trim()), // Convert semicolon-separated string to array
       },
-      workEnvironment: workEnvironment.split(',').map(item => item.trim()), // Convert comma-separated string to array
+      workEnvironment: workEnvironment.split(';').map(item => item.trim()), // Convert semicolon-separated string to array
       experience,
-      benefits: benefits.split(',').map(item => item.trim()), // Convert comma-separated string to array
+      benefits: benefits.split(';').map(item => item.trim()), // Convert semicolon-separated string to array
       applyDeadline,
       jobType,
       salary,
       qualification,
       jobDepartment,
       jobLocation,
-      openingType, // Consistent spelling of "Regular"
+      openingType,
     };
-
+  
     // Debugging: Log the job data before submission
     console.log('Submitting job data:', jobData);
-
+  
     try {
       // Send POST request to the backend
       const response = await axios.post('http://localhost:5000/api/jobs/post-job', jobData, {
@@ -55,11 +55,11 @@ const Jobs = () => {
           'Content-Type': 'application/json',
         },
       });
-
+  
       // Log success and show alert
       console.log('Job posted successfully:', response.data);
       alert('Job posted successfully!');
-
+  
       // Reset form fields after successful submission
       setJobTitle('');
       setJobDescription('');
@@ -74,7 +74,7 @@ const Jobs = () => {
       setQualification('');
       setJobDepartment('');
       setJobLocation('');
-      setOpeningType('Regular'); // Consistent spelling of "Regular"
+      setOpeningType('Regular');
     } catch (error) {
       // Log and display errors
       console.error('Error posting job:', error.response ? error.response.data : error.message);
@@ -84,10 +84,9 @@ const Jobs = () => {
       setIsLoading(false);
     }
   };
-
   return (
     <div className="container mt-5">
-      <h2 className="text-center mb-4">Create Job Posting</h2>
+      <h2 className="text-center mb-4"></h2>
       <div className="card p-4 shadow">
         <form onSubmit={handleSubmit}>
           {/* Job Title */}

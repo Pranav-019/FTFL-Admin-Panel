@@ -5,8 +5,6 @@ import {
   Row,
   Col,
   Table,
-  Dropdown,
-  DropdownButton,
   Form,
   Card,
   ButtonGroup,
@@ -21,8 +19,6 @@ const Crm = () => {
   const [filteredLeads, setFilteredLeads] = useState([]);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [statusFilter, setStatusFilter] = useState("All");
-  const [leadTypeFilter, setLeadTypeFilter] = useState("All");
   const [selectedLead, setSelectedLead] = useState(null);
   const [followUpComment, setFollowUpComment] = useState("");
   const [loading, setLoading] = useState(true);
@@ -91,43 +87,7 @@ const Crm = () => {
         break;
     }
 
-    if (statusFilter !== "All") {
-      filtered = filtered.filter((lead) => lead.status === statusFilter);
-    }
-    if (leadTypeFilter !== "All") {
-      filtered = filtered.filter((lead) => lead.leadType === leadTypeFilter);
-    }
-
     setFilteredLeads(filtered);
-  };
-
-  const updateLeadField = async (id, field, value) => {
-    try {
-      const response = await fetch(`https://Artisticify-backend.vercel.app/api/contact/${id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ [field]: value }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to update ${field}`);
-      }
-
-      setLeads((prevLeads) =>
-        prevLeads.map((lead) =>
-          lead._id === id ? { ...lead, [field]: value } : lead
-        )
-      );
-      applyFilter("all");
-
-      if (selectedLead && selectedLead._id === id) {
-        setSelectedLead((prevLead) => ({ ...prevLead, [field]: value }));
-      }
-    } catch (error) {
-      console.error(`Error updating ${field}:`, error);
-    }
   };
 
   const handleTabToggle = (lead) => {
@@ -192,7 +152,7 @@ const Crm = () => {
     <div className="mobile-lead-card mb-3 p-3 bg-white rounded shadow-sm">
       <div className="d-flex justify-content-between align-items-start mb-2">
         <div>
-          <h6 className="mb-1">{lead.name}</h6>
+          <h6 className="mb-1">{`${lead.firstName} ${lead.lastName}`}</h6>
           <p className="mb-1 text-muted small">{lead.phone}</p>
         </div>
         <Button
@@ -202,15 +162,6 @@ const Crm = () => {
         >
           <FaPen size={20} />
         </Button>
-      </div>
-      
-      <div className="d-flex justify-content-between align-items-center mb-2">
-        <span className={`status-badge ${lead.status?.toLowerCase().replace(' ', '-')}`}>
-          {lead.status}
-        </span>
-        <span className={`lead-type-badge ${lead.leadType?.toLowerCase().replace(' ', '-')}`}>
-          {lead.leadType}
-        </span>
       </div>
       
       <div className="mobile-lead-details">
@@ -277,29 +228,17 @@ const Crm = () => {
                           <th>Name</th>
                           <th>Email</th>
                           <th>Phone</th>
-                          <th>Service</th>
-                          <th>Status</th>
-                          <th>Lead Type</th>
+                          <th>Message</th>
                           <th>Action</th>
                         </tr>
                       </thead>
                       <tbody>
                         {filteredLeads.map((lead) => (
                           <tr key={lead._id}>
-                            <td>{lead.name}</td>
+                            <td>{`${lead.firstName} ${lead.lastName}`}</td>
                             <td>{lead.email}</td>
                             <td>{lead.phone}</td>
-                            <td>{lead.serviceSelected}</td>
-                            <td>
-                              <span className={`status-badge ${lead.status?.toLowerCase().replace(' ', '-')}`}>
-                                {lead.status}
-                              </span>
-                            </td>
-                            <td>
-                              <span className={`lead-type-badge ${lead.leadType?.toLowerCase().replace(' ', '-')}`}>
-                                {lead.leadType}
-                              </span>
-                            </td>
+                            <td>{lead.message}</td>
                             <td>
                               <Button
                                 variant="link"
@@ -337,7 +276,7 @@ const Crm = () => {
                   <div className="lead-details-grid">
                     <div className="detail-item">
                       <strong>Name:</strong>
-                      <p>{selectedLead.name}</p>
+                      <p>{`${selectedLead.firstName} ${selectedLead.lastName}`}</p>
                     </div>
                     <div className="detail-item">
                       <strong>Email:</strong>
@@ -350,35 +289,6 @@ const Crm = () => {
                     <div className="detail-item">
                       <strong>Service:</strong>
                       <p>{selectedLead.serviceSelected}</p>
-                    </div>
-
-                    <div className="detail-item">
-                      <strong>Status:</strong>
-                      <DropdownButton
-                        id="status-dropdown"
-                        title={selectedLead.status || "Select"}
-                        className="mt-2"
-                        onSelect={(value) => updateLeadField(selectedLead._id, "status", value)}
-                      >
-                        <Dropdown.Item eventKey="New">New</Dropdown.Item>
-                        <Dropdown.Item eventKey="In Progress">In Progress</Dropdown.Item>
-                        <Dropdown.Item eventKey="Converted">Converted</Dropdown.Item>
-                        <Dropdown.Item eventKey="Non Converted">Non Converted</Dropdown.Item>
-                      </DropdownButton>
-                    </div>
-
-                    <div className="detail-item">
-                      <strong>Lead Type:</strong>
-                      <DropdownButton
-                        id="leadType-dropdown"
-                        title={selectedLead.leadType || "Select"}
-                        className="mt-2"
-                        onSelect={(value) => updateLeadField(selectedLead._id, "leadType", value)}
-                      >
-                        <Dropdown.Item eventKey="High Priority">High Priority</Dropdown.Item>
-                        <Dropdown.Item eventKey="Medium Priority">Medium Priority</Dropdown.Item>
-                        <Dropdown.Item eventKey="Low Priority">Low Priority</Dropdown.Item>
-                      </DropdownButton>
                     </div>
                   </div>
 

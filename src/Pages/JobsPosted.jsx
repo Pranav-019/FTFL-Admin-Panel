@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Spinner, Button, Card, Container, Row, Col, Form } from 'react-bootstrap';
+import { Spinner, Button, Card, Container, Row, Col, Form, Modal } from 'react-bootstrap';
 
 const JobsPosted = () => {
   const [jobs, setJobs] = useState([]);
@@ -7,6 +7,7 @@ const JobsPosted = () => {
   const [deletingJobId, setDeletingJobId] = useState(null);
   const [editingJobId, setEditingJobId] = useState(null);
   const [editableJob, setEditableJob] = useState({});
+  const [showEditModal, setShowEditModal] = useState(false);
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -47,8 +48,9 @@ const JobsPosted = () => {
   };
 
   const handleEditJob = (job) => {
-    setEditableJob(job); // Set the entire job object as editable
+    setEditableJob(job);
     setEditingJobId(job._id);
+    setShowEditModal(true);
   };
 
   const handleUpdateJob = async (e) => {
@@ -64,7 +66,7 @@ const JobsPosted = () => {
       if (response.ok) {
         const updatedJobs = jobs.map(job => job._id === editingJobId ? { ...job, ...editableJob } : job);
         setJobs(updatedJobs);
-        setEditingJobId(null);
+        setShowEditModal(false);
       } else {
         alert('Failed to update the job');
       }
@@ -146,7 +148,7 @@ const JobsPosted = () => {
 
   return (
     <Container className="my-4">
-      <h1 className="text-center mb-4"></h1>
+      <h1 className="text-center mb-4">Posted Jobs</h1>
       {loading ? (
         <div className="text-center">
           <Spinner animation="border" variant="primary" />
@@ -158,34 +160,17 @@ const JobsPosted = () => {
               <Col key={job._id} xs={12} sm={6} md={4} lg={3} className="mb-4">
                 <Card className="shadow-sm">
                   <Card.Body>
-                    {editingJobId === job._id ? (
-                      <Form onSubmit={handleUpdateJob}>
-                        {Object.keys(editableJob).map((key) => {
-                          if (key === '_id' || key === '__v') return null; // Skip internal fields
-                          return renderEditableField(key, editableJob[key]);
-                        })}
-                        <Button variant="success" type="submit">Update</Button>
-                        <Button variant="secondary" onClick={() => setEditingJobId(null)} className="ms-2">Cancel</Button>
-                      </Form>
-                    ) : (
-                      <>
-                        {/* Display Job Name and Location */}
-                        <Card.Title>{job.jobTitle || 'No Job Name'}</Card.Title>
-                        <Card.Text>{job.jobLocation || 'No Location'}</Card.Text>
-                        <Button 
-                          variant="danger" 
-
-
-                    
-                          onClick={() => handleDeleteJob(job._id)}
-                          disabled={deletingJobId === job._id}
-                          className="me-2"
-                        >
-                          {deletingJobId === job._id ? <Spinner as="span" animation="border" size="sm" /> : 'Delete Job'}
-                        </Button>
-                        <Button variant="primary" onClick={() => handleEditJob(job)}>Edit Job</Button>
-                      </>
-                    )}
+                    <Card.Title>{job.jobTitle || 'No Job Name'}</Card.Title>
+                    <Card.Text>{job.jobLocation || 'No Location'}</Card.Text>
+                    <Button 
+                      variant="danger" 
+                      onClick={() => handleDeleteJob(job._id)}
+                      disabled={deletingJobId === job._id}
+                      className="me-2"
+                    >
+                      {deletingJobId === job._id ? <Spinner as="span" animation="border" size="sm" /> : 'Delete Job'}
+                    </Button>
+                    <Button variant="primary" onClick={() => handleEditJob(job)}>Edit Job</Button>
                   </Card.Body>
                 </Card>
               </Col>
@@ -195,6 +180,23 @@ const JobsPosted = () => {
           )}
         </Row>
       )}
+
+      {/* Edit Job Modal */}
+      <Modal show={showEditModal} onHide={() => setShowEditModal(false)} size="lg">
+        <Modal.Header closeButton>
+          <Modal.Title>Edit Job</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={handleUpdateJob}>
+            {Object.keys(editableJob).map((key) => {
+              if (key === '_id' || key === '__v') return null; // Skip internal fields
+              return renderEditableField(key, editableJob[key]);
+            })}
+            <Button variant="success" type="submit">Update</Button>
+            <Button variant="secondary" onClick={() => setShowEditModal(false)} className="ms-2">Cancel</Button>
+          </Form>
+        </Modal.Body>
+      </Modal>
     </Container>
   );
 };

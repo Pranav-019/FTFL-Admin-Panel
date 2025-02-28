@@ -48,7 +48,7 @@ const UserProfile = ({ onLogout }) => {
             {userRole || 'Role'}
           </p>
           <p className="text-gray-500 text-sm font-semibold dark:text-gray-400">
-            info@Artisticify.com
+            info@ftfltechnologies.com
           </p>
         </div>
       </div>
