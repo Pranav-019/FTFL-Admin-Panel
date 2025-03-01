@@ -29,7 +29,7 @@ const Newsletter = () => {
     <div className="container mt-5">
       <div className="row">
         <div className="col-md-6 mx-auto">
-          <h3 className="text-center">Send Promotional Email</h3>
+          <h3 className="text-center"></h3>
 
           {/* Promotional Email Form */}
           <div className="mb-3">
