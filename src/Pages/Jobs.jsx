@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
+import { Header } from "../Components"
 
 const Jobs = () => {
   // State variables for form fields
@@ -86,6 +87,7 @@ const Jobs = () => {
   };
   return (
     <div className="container mt-5">
+      <Header category="" title="Create A Job Posting"/>
       <h2 className="text-center mb-4"></h2>
       <div className="card p-4 shadow">
         <form onSubmit={handleSubmit}>

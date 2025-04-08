@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Spinner, Button, Card, Container, Row, Col, Form, Modal } from 'react-bootstrap';
+import { Header } from "../Components"
 
 const JobsPosted = () => {
   const [jobs, setJobs] = useState([]);
@@ -148,6 +149,7 @@ const JobsPosted = () => {
 
   return (
     <Container className="my-4">
+          <Header category="" title="Posted Jobs"/>
       <h1 className="text-center mb-4"></h1>
       {loading ? (
         <div className="text-center">

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Header } from "../Components"
 
 const Applied = () => {
     const [jobs, setJobs] = useState([]);
@@ -56,11 +57,13 @@ const Applied = () => {
     };
     return (
         <div className="container mt-4">
+            <Header category="" title="Applied Candidates" />
             <h2 className="text-center mb-4"></h2>
+
 
             {/* Job Dropdown */}
             <div className="mb-3">
-                <label className="form-label"><strong>Select a Job:</strong></label>
+                {/* <label className="form-label"><strong>Select a Job:</strong></label> */}
                 <select onChange={handleJobChange} className="form-select">
                     <option value="">Select a job</option>
                     {loading ? (

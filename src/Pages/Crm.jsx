@@ -102,7 +102,7 @@ const Crm = () => {
     const newFollowUp = followUpComment;
 
     try {
-      const response = await fetch(`https://Artisticify-backend.vercel.app/contact/${selectedLead._id}`, {
+      const response = await fetch(`https://ftfl-backend.vercel.app/api/contact/${selectedLead._id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -165,7 +165,7 @@ const Crm = () => {
       </div>
       
       <div className="mobile-lead-details">
-        <p className="mb-1 small"><strong>Service:</strong> {lead.serviceSelected}</p>
+        <p className="mb-1 small"><strong>Message:</strong> {lead.message}</p>
         <p className="mb-0 small"><strong>Email:</strong> {lead.email}</p>
       </div>
     </div>
@@ -175,7 +175,7 @@ const Crm = () => {
     <Container fluid className="crm-container p-2 p-md-4">
       <Row>
         <Col>
-          <Header category="Page" title="CRM" />
+          <Header category="" title="CRM" />
 
           <Card className="mb-4">
             <Card.Body className="p-2 p-md-4">
@@ -287,12 +287,12 @@ const Crm = () => {
                       <p>{selectedLead.phone}</p>
                     </div>
                     <div className="detail-item">
-                      <strong>Service:</strong>
-                      <p>{selectedLead.serviceSelected}</p>
+                      <strong>Message:</strong>
+                      <p>{selectedLead.message}</p>
                     </div>
                   </div>
 
-                  <div className="follow-up-section mt-4">
+                  {/* <div className="follow-up-section mt-4">
                     <h5>Follow Up Comments</h5>
                     <div className="follow-up-comments mb-3">
                       {selectedLead.followUp?.map((comment, index) => (
@@ -321,7 +321,7 @@ const Crm = () => {
                         Follow-up comment added successfully!
                       </p>
                     )}
-                  </div>
+                  </div> */}
 
                   <div className="meeting-section mt-4">
                     <h5>Start Online Meeting</h5>

@@ -98,6 +98,7 @@ const App = () => {
       case 'ADMIN':
         return (
           <>
+            <Route path="/Applied-Candidates" element={<Applied />} />
             <Route path="/revenue" element={<Ecommerce />} />
             <Route path="/orders" element={<Orders />} />
             <Route path="/digitalmarketing" element={<DigitalMarketing />} />
@@ -105,7 +106,6 @@ const App = () => {
             <Route path="/Packages" element={<Packages />} />
             <Route path="/Create Job-Posting" element={<Jobs />} />
             <Route path="/Posted Jobs" element={<JobsPosted />} />
-            <Route path="/Applied-Candidates" element={<Applied />} />
             <Route path="/Our-Work" element={<OurWork />} />
             <Route path="/design" element={<Design />} />
             <Route path="/NewsLetter" element={<Newsletter />} />
@@ -121,11 +121,11 @@ const App = () => {
             <Route path="/color-mapping" element={<ColorMapping />} />
             <Route path="/pyramid" element={<Pyramid />} />
             <Route path="/stacked" element={<Stacked />} />
-            <Route path="*" element={<Navigate to="/revenue" />} />
+            <Route path="*" element={<Navigate to="/Applied-Candidates" />} />
           </>
         );
       default:
-        return <Route path="*" element={<Navigate to="/revenue" />} />;
+        return <Route path="*" element={<Navigate to="/Applied-Candidates" />} />;
     }
   };
 

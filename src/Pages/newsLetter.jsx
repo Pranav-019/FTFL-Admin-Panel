@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Header } from "../Components";
 
 const Newsletter = () => {
   const [subject, setSubject] = useState('');
@@ -26,7 +27,10 @@ const Newsletter = () => {
   };
 
   return (
+    
     <div className="container mt-5">
+        <Header category="" title="Newsletter" />
+
       <div className="row">
         <div className="col-md-6 mx-auto">
           <h3 className="text-center"></h3>

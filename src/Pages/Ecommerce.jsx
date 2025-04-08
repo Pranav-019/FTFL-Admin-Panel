@@ -9,6 +9,7 @@ import { Button, LineChart, SparkLine } from '../Components';
 import { Container, Row, Col, Card } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useStateContext } from '../Contexts/ContextProvider';
+import { Header } from "../Components"
 
 // Register Chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, PointElement, LineElement);
@@ -152,6 +153,7 @@ const Ecommerce = () => {
 
   return (
     <Container fluid className="mt-4">
+        <Header category="" title="Revenue" />
       {loading ? (
         <div className="text-center">
           <p>Loading...</p>
